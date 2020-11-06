@@ -12,7 +12,7 @@ public class GunController : MonoBehaviour
     public int clipSize = 30;
     public int reservedAmmoCapacity = 270;
     public float damage = 10f;
-    public float range = 100f;
+    public float range = 1000f;
     public Camera fpsCam;
     public GameObject muzzleFlashLight;
     public GameObject impactEffect;
@@ -141,16 +141,32 @@ public class GunController : MonoBehaviour
                 Enemy enemy = hit.transform.GetComponent<Enemy>();
                 if(enemy != null)
                 {
-                    enemy.TakeDamage(damage);
+                    Debug.Log(hit.collider.transform.gameObject.layer);
+                    Debug.Log(LayerMask.NameToLayer("EnemyHead"));
+                    if(hit.collider.transform.gameObject.layer == LayerMask.NameToLayer("EnemyHead"))
+                    {
+                        Debug.Log("Headshot");
+                        enemy.TakeDamage(damage * 5);
+                    }
+                    else
+                    {
+                        Debug.Log("Bodyshot");
+                        enemy.TakeDamage(damage);
+                    }
+                }
+
+                
+                Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
+                if(rb != null)
+                {
+                    rb.constraints = RigidbodyConstraints.None;
+                    rb.AddForce(transform.parent.transform.forward * 500);
                 }
 
                 Debug.Log(hit.transform.name);
-                Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
-                /*
-                Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
-                rb.constraints = RigidbodyConstraints.None;
-                rb.AddForce(transform.parent.transform.forward * 500);
-                */
+
+                GameObject go = Instantiate(impactEffect, hit.point, Quaternion.LookRotation(hit.normal));
+                Destroy(go, 2f);
             }
             catch (Exception)
             {

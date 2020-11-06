@@ -16,9 +16,9 @@ TagManager:
   - 
   - Lighting
   - Ground
-  - Postprocessing
-  - 
-  - 
+  - MainPlayer
+  - Enemy
+  - EnemyHead
   - 
   - 
   - 
